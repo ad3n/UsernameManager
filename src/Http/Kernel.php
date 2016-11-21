@@ -11,7 +11,7 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class Kernel implements HttpKernelInterface
+abstract class Kernel implements HttpKernelInterface
 {
     /**
      * @var RouteCollection

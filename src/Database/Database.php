@@ -2,10 +2,13 @@
 
 namespace Ihsanuddin\Database;
 
+use Pixie\Connection;
+use Pixie\QueryBuilder\QueryBuilderHandler;
+
 class Database
 {
     /**
-     * @var \medoo
+     * @var Connection
      */
     private $connection;
 
@@ -36,7 +39,7 @@ class Database
      */
     private function connect($host, $database, $username, $password = null, $driver = 'mysql', $port = 3306, $charset = 'utf8')
     {
-        $this->connection = new \medoo([
+        $config = [
             'database_type' => $driver,
             'database_name' => $database,
             'server' => $host,
@@ -44,35 +47,27 @@ class Database
             'password' => $password,
             'charset' => $charset,
             'port' => $port,
-        ]);
+        ];
+
+        $this->connection = new Connection('mysql', $config, 'DEFAULT');
 
         return $this;
     }
 
     /**
-     * @param string $table
-     * @param array  $data
+     * @param string $query
      */
-    public function save($table, array $data)
+    public function execute($query)
     {
-        $this->connection->insert($table, $data);
+        $pdo = $this->connection->getPdoInstance();
+        $pdo->prepare($query)->execute();
     }
 
     /**
-     * @param string $table
+     * @return QueryBuilderHandler
      */
-    public function create($table)
+    public function getQueryBuilder()
     {
-        $this->connection->exec(sprintf('CREATE TABLE %s', $table));
-    }
-
-    /**
-     * @param string $table
-     * @param null   $columns
-     * @param array  $wheres
-     */
-    public function get($table, $columns = null, $wheres = array())
-    {
-        $this->connection->get($table);
+        return new QueryBuilderHandler($this->connection);
     }
 }
