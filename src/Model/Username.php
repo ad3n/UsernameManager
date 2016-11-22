@@ -7,18 +7,39 @@ use Ihsan\UsernameGenerator\Repository\UsernameInterface;
 class Username implements UsernameInterface
 {
     /**
+     * @var int
+     */
+    private $id;
+
+    /**
+     * @var string
+     */
+    private $fullName;
+
+    /**
+     * @var string
+     */
+    private $username;
+
+    /**
+     * @var \DateTime
+     */
+    private $birthDay;
+
+    /**
      * @return int
      */
     public function getId()
     {
-        // TODO: Implement getId() method.
+        return $this->id;
     }
 
     /**
-     * @return OwnerInterface
+     * @param int $id
      */
-    public function getOwner()
+    public function setId($id)
     {
+        $this->id = $id;
     }
 
     /**
@@ -26,7 +47,7 @@ class Username implements UsernameInterface
      */
     public function getFullName()
     {
-        // TODO: Implement getFullName() method.
+        return $this->fullName;
     }
 
     /**
@@ -34,7 +55,7 @@ class Username implements UsernameInterface
      */
     public function setFullName($fullName)
     {
-        // TODO: Implement setFullName() method.
+        $this->fullName = $fullName;
     }
 
     /**
@@ -42,7 +63,7 @@ class Username implements UsernameInterface
      */
     public function getUsername()
     {
-        // TODO: Implement getUsername() method.
+        return $this->username;
     }
 
     /**
@@ -50,22 +71,22 @@ class Username implements UsernameInterface
      */
     public function setUsername($username)
     {
-        // TODO: Implement setUsername() method.
+        $this->username = $username;
     }
 
     /**
-     * @return string
+     * @return \DateTime
      */
     public function getBirthDay()
     {
-        // TODO: Implement getBirthDay() method.
+        return $this->birthDay;
     }
 
     /**
-     * @param \DateTime $date
+     * @param \DateTime $birthDay
      */
-    public function setBirthDay(\DateTime $date)
+    public function setBirthDay(\DateTime $birthDay)
     {
-        // TODO: Implement setBirthDay() method.
+        $this->birthDay = $birthDay;
     }
 }
