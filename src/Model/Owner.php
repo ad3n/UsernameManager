@@ -5,11 +5,49 @@ namespace Ihsanuddin\Model;
 class Owner implements OwnerInterface
 {
     /**
+     * @var int
+     */
+    private $id;
+
+    /**
+     * @var string
+     */
+    private $name;
+
+    /**
+     * @var string
+     */
+    private $email;
+
+    /**
+     * @var string
+     */
+    private $ipAddress;
+
+    /**
+     * @var string
+     */
+    private $api;
+
+    /**
+     * @var string
+     */
+    private $usernameStorage;
+
+    /**
      * @return int
      */
     public function getId()
     {
-        // TODO: Implement getId() method.
+        return $this->id;
+    }
+
+    /**
+     * @param int $id
+     */
+    public function setId($id)
+    {
+        $this->id = $id;
     }
 
     /**
@@ -17,7 +55,15 @@ class Owner implements OwnerInterface
      */
     public function getName()
     {
-        // TODO: Implement getName() method.
+        return $this->name;
+    }
+
+    /**
+     * @param string $name
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
     }
 
     /**
@@ -25,7 +71,15 @@ class Owner implements OwnerInterface
      */
     public function getEmail()
     {
-        // TODO: Implement getEmail() method.
+        return $this->email;
+    }
+
+    /**
+     * @param string $email
+     */
+    public function setEmail($email)
+    {
+        $this->email = $email;
     }
 
     /**
@@ -33,7 +87,15 @@ class Owner implements OwnerInterface
      */
     public function getIpAddress()
     {
-        // TODO: Implement getContactPerson() method.
+        return $this->ipAddress;
+    }
+
+    /**
+     * @param string $ipAddress
+     */
+    public function setIpAddress($ipAddress)
+    {
+        $this->ipAddress = $ipAddress;
     }
 
     /**
@@ -41,7 +103,15 @@ class Owner implements OwnerInterface
      */
     public function getApi()
     {
-        // TODO: Implement getApi() method.
+        return $this->api;
+    }
+
+    /**
+     * @param string $api
+     */
+    public function setApi($api)
+    {
+        $this->api = $api;
     }
 
     /**
@@ -49,6 +119,14 @@ class Owner implements OwnerInterface
      */
     public function getUsernameStorage()
     {
-        // TODO: Implement getUsernameStorage() method.
+        return $this->usernameStorage;
+    }
+
+    /**
+     * @param string $usernameStorage
+     */
+    public function setUsernameStorage($usernameStorage)
+    {
+        $this->usernameStorage = $usernameStorage;
     }
 }

@@ -34,8 +34,6 @@ class Database
      * @param string $driver
      * @param int    $port
      * @param string $charset
-     *
-     * @return Database
      */
     private function connect($host, $database, $username, $password = null, $driver = 'mysql', $port = 3306, $charset = 'utf8')
     {
@@ -50,17 +48,22 @@ class Database
         ];
 
         $this->connection = new Connection('mysql', $config, 'DEFAULT');
-
-        return $this;
     }
 
     /**
      * @param string $query
+     * @param array $parameters
      */
-    public function execute($query)
+    public function execute($query, array $parameters = array())
     {
         $pdo = $this->connection->getPdoInstance();
-        $pdo->prepare($query)->execute();
+        $statement = $pdo->prepare($query);
+
+        foreach ($parameters as $parameter => $value) {
+            $statement->bindParam($parameter, $value);
+        }
+
+        $statement->execute();
     }
 
     /**
