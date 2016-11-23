@@ -27,7 +27,7 @@ class OwnerRepository
     {
         $sql =
 <<<'SQLCODE'
-INSERT INTO %table% (
+INSERT INTO %owner% (
     name,
     email,
     ip_address,
@@ -50,7 +50,7 @@ SQLCODE;
             'usernameStorage' => $owner->getUsernameStorage(),
         ];
 
-        $this->database->execute(str_replace('%table%', self::TABLE, $sql), $parameters);
+        $this->database->execute(str_replace('%owner%', self::TABLE, $sql), $parameters);
     }
 
     /**
@@ -90,7 +90,7 @@ SQLCODE;
             return $result;
         }
 
-        return $this->normalize($result);
+        return $this->normalize($result[0]);
     }
 
     /**

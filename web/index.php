@@ -4,17 +4,35 @@ $loader = require __DIR__.'/../vendor/autoload.php';
 
 use Ihsanuddin\Application;
 use Ihsanuddin\Event\GetResponseEvent;
-use Ihsanuddin\Security\Security;
 use Ihsanuddin\Repository\OwnerRepository;
+use Ihsanuddin\Security\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\Session\Session;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpKernel\Exception\NotAcceptableHttpException;
+use Ihsanuddin\Controller\UsernameController;
 
 $request = Request::createFromGlobals();
 $app = new Application();
 
 $app->route('/username/generate', function () use ($app, $request) {
-    //todo
+    if (!($request->query->get('n') || $request->query->get('b'))) {
+        throw new NotAcceptableHttpException();
+    }
+
+    $controller = new UsernameController($app, $request);
+    $username = $controller->generate();
+    if (!$username) {
+        return new JsonResponse(array(
+            'status' => 'KO',
+            'message' => 'Username yang sesuai tidak ditemukan.',
+        ));
+    }
+
+    return new JsonResponse(array(
+        'status' => 'OK',
+        'message' => $username,
+    ));
 });
 
 $app->route('/username/confirm/{username}', function () use ($app) {
@@ -29,8 +47,8 @@ $app->on(Application::FILTER_REQUEST, function (GetResponseEvent $event) use ($a
         return;
     }
 
-    $session = new Session();
-    $session->set('username', serialize($security->getOwner()));
+    $session = $app->getSession();
+    $session->set('owner', serialize($security->getOwner()));
 });
 
 $response = $app->handle($request);

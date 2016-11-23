@@ -4,6 +4,7 @@ namespace Ihsanuddin;
 
 use Ihsanuddin\Database\Database;
 use Ihsanuddin\Http\Kernel;
+use Symfony\Component\HttpFoundation\Session\Session;
 
 class Application extends Kernel
 {
@@ -16,11 +17,17 @@ class Application extends Kernel
      */
     private $database;
 
+    /**
+     * @var Session
+     */
+    private $session;
+
     public function __construct()
     {
         parent::__construct();
 
         $this->database = new Database(self::HOST, self::DATABASE, self::USERNAME);
+        $this->session = new Session();
     }
 
     /**
@@ -29,5 +36,13 @@ class Application extends Kernel
     public function getDatabase()
     {
         return $this->database;
+    }
+
+    /**
+     * @return Session
+     */
+    public function getSession()
+    {
+        return $this->session;
     }
 }

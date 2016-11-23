@@ -5,6 +5,7 @@ namespace Ihsanuddin\Repository;
 use Ihsan\UsernameGenerator\Repository\UsernameInterface;
 use Ihsan\UsernameGenerator\Repository\UsernameRepositoryInterface;
 use Ihsanuddin\Database\Database;
+use Ihsanuddin\Model\OwnerInterface;
 use Ihsanuddin\Model\Username;
 
 class UsernameRepository implements UsernameRepositoryInterface
@@ -15,18 +16,18 @@ class UsernameRepository implements UsernameRepositoryInterface
     private $database;
 
     /**
-     * @var string
+     * @var OwnerInterface
      */
-    private $table;
+    private $owner;
 
     /**
      * @param Database $database
-     * @param string   $table
+     * @param OwnerInterface   $owner
      */
-    public function __construct(Database $database, $table)
+    public function __construct(Database $database, OwnerInterface $owner)
     {
         $this->database = $database;
-        $this->table = $table;
+        $this->owner = $owner;
     }
 
     /**
@@ -35,8 +36,8 @@ class UsernameRepository implements UsernameRepositoryInterface
     public function save(UsernameInterface $username)
     {
         $sql = <<<'SQLCODE'
-INSERT INTO %table% (
-    username,
+INSERT INTO %owner% (
+    username
 )
 VALUES (
     :username
@@ -45,14 +46,14 @@ SQLCODE;
 
         /** @var Username $username */
         if (empty($username->getOwner())) {
-            throw new \InvalidArgumentException(sprintf('User %s have not owner.', $username->getUsername()));
+            $username->setOwner($this->owner);
         }
 
         $parameters = [
             'username' => $username->getUsername(),
         ];
 
-        $this->database->execute(str_replace('%table%', $username->getOwner()->getUsernameStorage(), $sql), $parameters);
+        $this->database->execute(str_replace('%owner%', $username->getOwner()->getUsernameStorage(), $sql), $parameters);
     }
 
     /**
@@ -63,7 +64,7 @@ SQLCODE;
     public function isExist($username)
     {
         $queryBuilder = $this->database->getQueryBuilder();
-        $queryBuilder->from($this->table);
+        $queryBuilder->from($this->owner->getUsernameStorage());
         $queryBuilder->where('username', '=', $username);
 
         $result = $queryBuilder->get();
@@ -82,7 +83,7 @@ SQLCODE;
     public function countUsage($characters)
     {
         $queryBuilder = $this->database->getQueryBuilder();
-        $queryBuilder->from($this->table);
+        $queryBuilder->from($this->owner->getUsernameStorage());
         $queryBuilder->where('username', 'LIKE', sprintf('%%%s%%', $characters));
 
         return $queryBuilder->count();
