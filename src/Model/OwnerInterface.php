@@ -30,6 +30,11 @@ interface OwnerInterface
     public function getApi();
 
     /**
+     * @param $storage
+     */
+    public function setUsernameStorage($storage);
+
+    /**
      * @return string
      */
     public function getUsernameStorage();

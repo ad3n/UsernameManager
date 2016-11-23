@@ -26,7 +26,7 @@ class OwnerRepository
     public function save(OwnerInterface $owner)
     {
         $sql =
-<<<SQLCODE
+<<<'SQLCODE'
 INSERT INTO %table% (
     name,
     email,
@@ -55,6 +55,7 @@ SQLCODE;
 
     /**
      * @param $id
+     *
      * @return Owner|null
      */
     public function find($id)
@@ -94,6 +95,7 @@ SQLCODE;
 
     /**
      * @param \stdClass $data
+     *
      * @return Owner
      */
     private function normalize(\stdClass $data)

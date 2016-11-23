@@ -12,6 +12,11 @@ class Username implements UsernameInterface
     private $id;
 
     /**
+     * @var OwnerInterface
+     */
+    private $owner;
+
+    /**
      * @var string
      */
     private $fullName;
@@ -40,6 +45,22 @@ class Username implements UsernameInterface
     public function setId($id)
     {
         $this->id = $id;
+    }
+
+    /**
+     * @return OwnerInterface
+     */
+    public function getOwner()
+    {
+        return $this->owner;
+    }
+
+    /**
+     * @param OwnerInterface $owner
+     */
+    public function setOwner(OwnerInterface $owner)
+    {
+        $this->owner = $owner;
     }
 
     /**

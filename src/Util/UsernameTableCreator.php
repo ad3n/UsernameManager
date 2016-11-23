@@ -8,27 +8,23 @@ use Ihsanuddin\Model\OwnerInterface;
 class UsernameTableCreator
 {
     /**
-     * @param Database $database
+     * @param Database       $database
      * @param OwnerInterface $owner
      */
     public static function create(Database $database, OwnerInterface $owner)
     {
-        $raw =
-<<<SQLCODE
-CREATE TABLE username_%owner%
+        $sql =
+<<<'SQLCODE'
+CREATE TABLE %table%
 (
-    id INT(11) PRIMARY KEY NOT NULL AUTO_INCREMENT,
-    owner_id INT(11) NOT NULL,
-    full_name VARCHAR(255) NOT NULL,
-    username VARCHAR(12) NOT NULL,
-    birth_day DATE NOT NULL
+    username VARCHAR(12) PRIMARY KEY NOT NULL
 );
 SQLCODE;
-
-        $sql = str_replace('%owner%', $owner->getId(), $raw);
+        $table = sprintf('username_%s', $owner->getId());
 
         try {
-            $database->execute($sql);
+            $database->execute(str_replace('%table%', $table, $sql));
+            $owner->setUsernameStorage($table);
         } catch (\PDOException $exception) {
             echo $exception->getTraceAsString();
             exit();
