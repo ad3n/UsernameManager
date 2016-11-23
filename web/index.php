@@ -35,8 +35,14 @@ $app->route('/username/generate', function () use ($app, $request) {
     ));
 });
 
-$app->route('/username/confirm/{username}', function () use ($app) {
-    //todo
+$app->route('/username/confirm/{username}', function ($username) use ($app, $request) {
+    $controller = new UsernameController($app, $request);
+    $controller->save($username);
+
+    return new JsonResponse(array(
+        'status' => 'OK',
+        'message' => sprintf('Username %s berhasil disimpan.', $username),
+    ), Response::HTTP_CREATED);
 });
 
 $app->on(Application::FILTER_REQUEST, function (GetResponseEvent $event) use ($app) {

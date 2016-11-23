@@ -5,7 +5,7 @@
         "symfony/routing": "^3.1",
         "symfony/event-dispatcher": "^3.1",
         "symfony/yaml": "^3.1",
-        "ad3n/Username": "^0.3.0",
+        "ad3n/Username": "~0.3",
         "usmanhalalit/pixie": "^2.0"
     },
     "autoload": {

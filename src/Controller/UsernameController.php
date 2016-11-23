@@ -41,4 +41,15 @@ class UsernameController
 
         return $factory->generate($this->request->query->get('n'), \DateTime::createFromFormat('Y-m-d', $this->request->query->get('b')));
     }
+
+    public function save($username)
+    {
+        $user = new Username();
+        $user->setUsername($username);
+
+        /** @var OwnerInterface $owner */
+        $owner = unserialize($this->application->getSession()->get('owner'));
+        $repository = new UsernameRepository($this->application->getDatabase(), $owner);
+        $repository->save($user);
+    }
 }

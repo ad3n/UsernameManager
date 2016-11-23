@@ -4,21 +4,21 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "65421c530e7a862abe3f290c32fdd75c",
-    "content-hash": "14f51ce94103b746e45af711c847a05d",
+    "hash": "59509bfdf36f774422de80b95129cf93",
+    "content-hash": "f2abd388ff81805bf0d5326412ac2296",
     "packages": [
         {
             "name": "ad3n/username",
-            "version": "0.3",
+            "version": "0.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/ad3n/Username.git",
-                "reference": "03d5d1c9f58a8e41696e3d8ca181a1a32dfee9c7"
+                "reference": "ef5fc23a62e3e6f2e8bf17641a42cbaaadb7f2f3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ad3n/Username/zipball/03d5d1c9f58a8e41696e3d8ca181a1a32dfee9c7",
-                "reference": "03d5d1c9f58a8e41696e3d8ca181a1a32dfee9c7",
+                "url": "https://api.github.com/repos/ad3n/Username/zipball/ef5fc23a62e3e6f2e8bf17641a42cbaaadb7f2f3",
+                "reference": "ef5fc23a62e3e6f2e8bf17641a42cbaaadb7f2f3",
                 "shasum": ""
             },
             "require": {
@@ -39,7 +39,7 @@
                 "proprietary"
             ],
             "description": "classes to generate unique username like XXXXXXXX0000",
-            "time": "2016-11-17 09:47:58"
+            "time": "2016-11-23 13:17:06"
         },
         {
             "name": "psr/log",
