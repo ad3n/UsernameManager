@@ -36,6 +36,8 @@ abstract class Kernel implements HttpKernelInterface
         $context->fromRequest($request);
         $matcher = new UrlMatcher($this->routes, $context);
 
+        //Add Event
+
         try {
             $attributes = $matcher->match($request->getPathInfo());
 

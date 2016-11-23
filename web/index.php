@@ -3,15 +3,18 @@
 $loader = require __DIR__.'/../vendor/autoload.php';
 
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Ihsanuddin\Application;
 
 $request = Request::createFromGlobals();
 
 $app = new Application();
 
-$app->route('/hello/{name}', function ($name) {
-    return new Response('Hello '.$name);
+$app->route('/username/generate', function () use ($app, $request) {
+    //todo
+});
+
+$app->route('/username/confirm/{username}', function () use ($app) {
+    //todo
 });
 
 $response = $app->handle($request);

@@ -73,6 +73,27 @@ SQLCODE;
     }
 
     /**
+     * @param string $apiKey
+     * @param string $ipAddress
+     *
+     * @return Owner|null
+     */
+    public function findByApiAndIpAddress($apiKey, $ipAddress)
+    {
+        $queryBuilder = $this->database->getQueryBuilder();
+        $queryBuilder->from(self::TABLE);
+        $queryBuilder->where('api', '=', $apiKey);
+        $queryBuilder->where('ip_address', '=', $ipAddress);
+
+        $result = $queryBuilder->get();
+        if (!$result) {
+            return $result;
+        }
+
+        return $this->normalize($result);
+    }
+
+    /**
      * @return array|null
      */
     public function findAll()
