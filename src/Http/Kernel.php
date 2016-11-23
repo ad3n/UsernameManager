@@ -2,25 +2,36 @@
 
 namespace Ihsanuddin\Http;
 
-use Symfony\Component\Routing\Matcher\UrlMatcher;
-use Symfony\Component\Routing\RequestContext;
-use Symfony\Component\Routing\RouteCollection;
-use Symfony\Component\Routing\Route;
-use Symfony\Component\Routing\Exception\ResourceNotFoundException;
-use Symfony\Component\HttpKernel\HttpKernelInterface;
+use Ihsanuddin\Event\GetResponseEvent;
+use Symfony\Component\EventDispatcher\Event;
+use Symfony\Component\EventDispatcher\EventDispatcher;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\HttpKernelInterface;
+use Symfony\Component\Routing\Exception\ResourceNotFoundException;
+use Symfony\Component\Routing\Matcher\UrlMatcher;
+use Symfony\Component\Routing\RequestContext;
+use Symfony\Component\Routing\Route;
+use Symfony\Component\Routing\RouteCollection;
 
 abstract class Kernel implements HttpKernelInterface
 {
+    const FILTER_REQUEST = 'pre_request';
+
     /**
      * @var RouteCollection
      */
     protected $routes;
 
+    /**
+     * @var EventDispatcher
+     */
+    protected $dispatcher;
+
     public function __construct()
     {
         $this->routes = new RouteCollection();
+        $this->dispatcher = new EventDispatcher();
     }
 
     /**
@@ -32,11 +43,18 @@ abstract class Kernel implements HttpKernelInterface
      */
     public function handle(Request $request, $type = HttpKernelInterface::MASTER_REQUEST, $catch = true)
     {
+        $filterRequest = new GetResponseEvent();
+        $filterRequest->setRequest($request);
+        /** @var GetResponseEvent $filterRequest */
+        $filterRequest = $this->fire(self::FILTER_REQUEST, $filterRequest);
+
+        if ($response = $filterRequest->getResponse()) {
+            return $response;
+        }
+
         $context = new RequestContext();
         $context->fromRequest($request);
         $matcher = new UrlMatcher($this->routes, $context);
-
-        //Add Event
 
         try {
             $attributes = $matcher->match($request->getPathInfo());
@@ -66,5 +84,29 @@ abstract class Kernel implements HttpKernelInterface
             $path,
             array('_controller' => $controller)
         ));
+    }
+
+    /**
+     * @param string $event
+     * @param callable $callback
+     */
+    public function on($event, $callback)
+    {
+        if (! is_callable($callback)) {
+            throw new \InvalidArgumentException(sprintf('%s is not callable.'));
+        }
+
+        $this->dispatcher->addListener($event, $callback);
+    }
+
+    /**
+     * @param string $eventName
+     * @param Event $event
+     *
+     * @return Event
+     */
+    public function fire($eventName, Event $event)
+    {
+        return $this->dispatcher->dispatch($eventName, $event);
     }
 }

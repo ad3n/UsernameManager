@@ -3,7 +3,7 @@
 namespace Ihsanuddin\Security;
 
 use Ihsanuddin\Model\OwnerInterface;
-use Repository\OwnerRepository;
+use Ihsanuddin\Repository\OwnerRepository;
 use Symfony\Component\HttpFoundation\Request;
 
 class Security
@@ -25,6 +25,7 @@ class Security
 
     /**
      * @param Request $request
+     *
      * @return bool
      */
     public function isGranted(Request $request)

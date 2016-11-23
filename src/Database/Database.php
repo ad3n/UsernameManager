@@ -38,9 +38,9 @@ class Database
     private function connect($host, $database, $username, $password = null, $driver = 'mysql', $port = 3306, $charset = 'utf8')
     {
         $config = [
-            'database_type' => $driver,
-            'database_name' => $database,
-            'server' => $host,
+            'driver' => $driver,
+            'host' => $host,
+            'database' => $database,
             'username' => $username,
             'password' => $password,
             'charset' => $charset,

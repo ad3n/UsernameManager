@@ -1,6 +1,6 @@
 <?php
 
-namespace Repository;
+namespace Ihsanuddin\Repository;
 
 use Ihsanuddin\Database\Database;
 use Ihsanuddin\Model\Owner;

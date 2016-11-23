@@ -1,6 +1,6 @@
 <?php
 
-namespace Repository;
+namespace Ihsanuddin\Repository;
 
 use Ihsan\UsernameGenerator\Repository\UsernameInterface;
 use Ihsan\UsernameGenerator\Repository\UsernameRepositoryInterface;
