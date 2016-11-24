@@ -28,6 +28,11 @@ abstract class Kernel implements HttpKernelInterface
      */
     protected $dispatcher;
 
+    /**
+     * @var UrlMatcher
+     */
+    protected $matcher;
+
     public function __construct()
     {
         $this->routes = new RouteCollection();
@@ -43,6 +48,10 @@ abstract class Kernel implements HttpKernelInterface
      */
     public function handle(Request $request, $type = HttpKernelInterface::MASTER_REQUEST, $catch = true)
     {
+        $context = new RequestContext();
+        $context->fromRequest($request);
+        $this->matcher = new UrlMatcher($this->routes, $context);
+
         $filterRequest = new GetResponseEvent();
         $filterRequest->setRequest($request);
         /** @var GetResponseEvent $filterRequest */
@@ -52,12 +61,8 @@ abstract class Kernel implements HttpKernelInterface
             return $response;
         }
 
-        $context = new RequestContext();
-        $context->fromRequest($request);
-        $matcher = new UrlMatcher($this->routes, $context);
-
         try {
-            $attributes = $matcher->match($request->getPathInfo());
+            $attributes = $this->matcher->match($request->getPathInfo());
 
             $controller = $attributes['_controller'];
             unset($attributes['_controller']);
@@ -108,5 +113,23 @@ abstract class Kernel implements HttpKernelInterface
     public function fire($eventName, Event $event)
     {
         return $this->dispatcher->dispatch($eventName, $event);
+    }
+
+    /**
+     * @param string $url
+     *
+     * @return bool
+     */
+    public function match($url)
+    {
+        try {
+            if (empty($this->matcher->match($url))) {
+                return false;
+            }
+
+            return true;
+        } catch (\Exception $exception) {
+            return false;
+        }
     }
 }

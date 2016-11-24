@@ -2,12 +2,18 @@
 
 namespace Ihsanuddin\Security;
 
+use Ihsanuddin\Application;
 use Ihsanuddin\Model\OwnerInterface;
 use Ihsanuddin\Repository\OwnerRepository;
 use Symfony\Component\HttpFoundation\Request;
 
 class Security
 {
+    /**
+     * @var Application
+     */
+    private $application;
+
     /**
      * @var OwnerRepository
      */
@@ -18,8 +24,13 @@ class Security
      */
     private $owner;
 
-    public function __construct(OwnerRepository $repository)
+    /**
+     * @param Application $application
+     * @param OwnerRepository $repository
+     */
+    public function __construct(Application $application, OwnerRepository $repository)
     {
+        $this->application = $application;
         $this->repository = $repository;
     }
 
@@ -38,6 +49,24 @@ class Security
         $this->owner = $owner;
 
         return true;
+    }
+
+    /**
+     * @param OwnerInterface $owner
+     *
+     * @return bool
+     */
+    public function isAdmin(OwnerInterface $owner = null)
+    {
+        if (null === $owner) {
+            $owner = unserialize($this->application->getSession()->get('owner'));
+        }
+
+        if ($owner->getApi() === OwnerRepository::ADMIN_API && $owner->getIpAddress() === OwnerRepository::ADMIN_IP_ADDRESS) {
+            return true;
+        }
+
+        return false;
     }
 
     /**

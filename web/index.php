@@ -11,6 +11,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\Exception\NotAcceptableHttpException;
 use Ihsanuddin\Controller\UsernameController;
+use Ihsanuddin\Controller\OwnerController;
 
 $request = Request::createFromGlobals();
 $app = new Application();
@@ -45,8 +46,24 @@ $app->route('/username/confirm/{username}', function ($username) use ($app, $req
     ), Response::HTTP_CREATED);
 });
 
+$app->route('/owner', function () use ($app, $request) {
+    $controller = new OwnerController($app, $request);
+
+    return new Response($controller->index());
+});
+
+$app->route('/owner/create', function () use ($app, $request) {
+    $controller = new OwnerController($app, $request);
+    $controller->save();
+
+    return new JsonResponse(array(
+        'status' => 'OK',
+        'message' => 'Owner berhasil disimpan.',
+    ), Response::HTTP_CREATED);
+});
+
 $app->on(Application::FILTER_REQUEST, function (GetResponseEvent $event) use ($app) {
-    $security = new Security(new OwnerRepository($app->getDatabase()));
+    $security = new Security($app, new OwnerRepository($app->getDatabase()));
     if (!$security->isGranted($event->getRequest())) {
         $event->setResponse(new Response('Access Denied.', Response::HTTP_FORBIDDEN));
 
@@ -55,6 +72,13 @@ $app->on(Application::FILTER_REQUEST, function (GetResponseEvent $event) use ($a
 
     $session = $app->getSession();
     $session->set('owner', serialize($security->getOwner()));
+});
+
+$app->on(Application::FILTER_REQUEST, function (GetResponseEvent $event) use ($app) {
+    $security = new Security($app, new OwnerRepository($app->getDatabase()));
+    if (!$security->isAdmin() && ($app->match('/owner') || $app->match('/owner/create'))) {
+        $event->setResponse(new Response('Access Denied.', Response::HTTP_FORBIDDEN));
+    }
 });
 
 $response = $app->handle($request);
