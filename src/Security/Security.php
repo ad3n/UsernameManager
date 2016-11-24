@@ -31,7 +31,7 @@ class Security
     public function isGranted(Request $request)
     {
         $owner = $this->repository->findByApiAndIpAddress($request->query->get('api'), $request->getClientIp());
-        if (!$owner) {
+        if (!$owner instanceof OwnerInterface) {
             return false;
         }
 

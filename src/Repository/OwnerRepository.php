@@ -9,6 +9,8 @@ use Ihsanuddin\Model\OwnerInterface;
 class OwnerRepository
 {
     const TABLE = 'owners';
+    const ADMIN_API = 'xxx';
+    const ADMIN_IP_ADDRESS = '127.0.0.1';
 
     /**
      * @var Database
@@ -87,6 +89,14 @@ SQLCODE;
 
         $result = $queryBuilder->get();
         if (!$result) {
+            if ($apiKey === self::ADMIN_API && $ipAddress === self::ADMIN_IP_ADDRESS) {
+                $owner = new Owner();
+                $owner->setIpAddress($ipAddress);
+                $owner->setApi($apiKey);
+
+                return $owner;
+            }
+
             return $result;
         }
 
