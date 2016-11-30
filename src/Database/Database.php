@@ -60,7 +60,7 @@ class Database
         $statement = $pdo->prepare($query);
 
         foreach ($parameters as $parameter => $value) {
-            $statement->bindParam($parameter, $value);
+            $statement->bindValue(sprintf(':%s', $parameter), $value);
         }
 
         $statement->execute();

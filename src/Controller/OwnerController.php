@@ -100,7 +100,7 @@ class OwnerController
 
         $owner->setName($ownerRequest['name']);
         $owner->setEmail($ownerRequest['email']);
-        $owner->setIpAddress($ownerRequest['ip']);
+        $owner->setIpAddress($ownerRequest['ip_address']);
 
         return $owner;
     }

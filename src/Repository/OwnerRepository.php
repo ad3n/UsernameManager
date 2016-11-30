@@ -114,7 +114,7 @@ SQLCODE;
             return $result;
         }
 
-        return $this->normalize($result);
+        return $this->normalize($result[0]);
     }
 
     /**
