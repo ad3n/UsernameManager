@@ -19,8 +19,8 @@
                 margin-left: 7px !important;
             }
 
-            .margin-bottom-7 {
-                margin-bottom: 7px !important;
+            .margin-bottom-17 {
+                margin-bottom: 17px !important;
             }
 
             .margin-top-7 {
@@ -39,7 +39,7 @@
     <body>
         <div class="container-full margin-top-7">
             <div role="row">
-                <div class="col-md-12 margin-bottom-7">
+                <div class="col-md-12 margin-bottom-17">
                     <form class="form-inline form" enctype="application/x-www-form-urlencoded">
                         <div class="form-group col-md-3">
                             <label for="name">Nama:</label>
@@ -87,6 +87,10 @@
                         {% endfor %}
                     </table>
                 </div>
+                <div class="col-md-12">
+                    <button class="btn btn-primary margin-top-7 add-new">Tambah Baru</button>
+                    <button class="btn btn-primary margin-top-7 pull-right clear">Muat Ulang</button>
+                </div>
             </div>
         </div>
 
@@ -115,26 +119,30 @@
                     var $this = jQuery(this);
 
                     if ('undefined' !== typeof $this.data('id')) {
-                        jQuery.ajax({
-                            method: 'POST',
-                            url: '/owner/edit/' + $this.data('id') + '?api=' + getParameterByName('api'),
-                            data: {
-                                owner: {
-                                    name: jQuery('.name').val(),
-                                    email: jQuery('.email').val(),
-                                    ip_address: jQuery('.ip_address').val()
+                        if (0 === $this.data('id')) {
+                            //Add new
+                        } else {
+                            jQuery.ajax({
+                                method: 'POST',
+                                url: '/owner/edit/' + $this.data('id') + '?api=' + getParameterByName('api'),
+                                data: {
+                                    owner: {
+                                        name: jQuery('.name').val(),
+                                        email: jQuery('.email').val(),
+                                        ip_address: jQuery('.ip_address').val()
+                                    }
                                 }
-                            }
-                        })
-                        .done(function(response) {
-                            jQuery('.message').html(response.message);
-                            jQuery('.modal-message').modal({
-                                keyboard: false
-                            });
-                        })
-                        .fail(function (jqXHR, textStatus) {
-                            alert( "Request failed: " + textStatus );
-                        });
+                            })
+                                .done(function(response) {
+                                    jQuery('.message').html(response.message);
+                                    jQuery('.modal-message').modal({
+                                        keyboard: false
+                                    });
+                                })
+                                .fail(function (jqXHR, textStatus) {
+                                    alert( "Request failed: " + textStatus );
+                                });
+                        }
                     } else {
                         var api = getParameterByName('api');
                         var name = jQuery('.name').val();
@@ -154,18 +162,37 @@
                     window.location.reload();
                 });
 
+                jQuery(document).on('click', '.clear', function (e) {
+                    e.preventDefault();
+
+                    window.location.reload();
+                });
+
                 jQuery(document).on('click', '.edit', function (e) {
                     e.preventDefault();
 
                     var button = jQuery('.search');
                     var $this = jQuery(this);
 
-                    button.html('Edit');
+                    button.html('Update');
                     button.data('id', $this.data('id'));
                     jQuery('.name').val($this.data('name'));
                     jQuery('.email').val($this.data('email'));
                     jQuery('.ip_address').val($this.data('ip'));
                 });
+
+                jQuery(document).on('click', '.add-new', function (e) {
+                    e.preventDefault();
+
+                    var button = jQuery('.search');
+
+                    button.html('Simpan');
+                    button.data('id', 0);
+                    jQuery('.name').val('');
+                    jQuery('.email').val('');
+                    jQuery('.ip_address').val('');
+                });
+
 
                 return false;
             });
