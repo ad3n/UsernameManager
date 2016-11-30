@@ -33,7 +33,9 @@ class OwnerController
 
     public function index()
     {
-        return $this->application->getTemplate()->render('index.html.twig');
+        $ownerRepository = new OwnerRepository($this->application->getDatabase());
+
+        return $this->application->getTemplate()->render('index.html.twig', array('owners' => $ownerRepository->findAll($this->request->query->get('filters', array()))));
     }
 
     public function save()
@@ -99,7 +101,6 @@ class OwnerController
         $owner->setName($ownerRequest['name']);
         $owner->setEmail($ownerRequest['email']);
         $owner->setIpAddress($ownerRequest['ip']);
-        $owner->setApi($ownerRequest['api']);
 
         return $owner;
     }

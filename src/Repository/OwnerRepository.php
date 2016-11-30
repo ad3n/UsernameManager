@@ -48,7 +48,7 @@ SQLCODE;
             'name' => $owner->getName(),
             'email' => $owner->getEmail(),
             'ipAddress' => $owner->getIpAddress(),
-            'api' => $owner->getApi(),
+            'api' => sha1(sprintf('%s%s%s', self::TABLE, $owner->getUsernameStorage(), microtime())),
             'usernameStorage' => $owner->getUsernameStorage(),
         ];
 
@@ -147,12 +147,20 @@ SQLCODE;
     }
 
     /**
+     * @param array $keywords
+     *
      * @return array|null
      */
-    public function findAll()
+    public function findAll(array $keywords = array())
     {
         $queryBuilder = $this->database->getQueryBuilder();
         $queryBuilder->from(self::TABLE);
+
+        foreach ($keywords as $field => $keyword) {
+            if (in_array($field, array('name', 'email', 'ip_address')) && $keyword) {
+                $queryBuilder->where($field, 'LIKE', sprintf('%%%s%%', $keyword));
+            }
+        }
 
         $results = $queryBuilder->get();
         if (!$results) {
