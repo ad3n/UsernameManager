@@ -62,6 +62,20 @@ $app->route('/owner/create', function () use ($app, $request) {
     ), Response::HTTP_CREATED);
 });
 
+$app->route('/owner/edit/{id}', function ($id) use ($app, $request) {
+    $controller = new OwnerController($app, $request);
+    $response = $controller->edit($id);
+
+    return new JsonResponse($response, Response::HTTP_OK);
+});
+
+$app->route('/owner/delete/{id}', function ($id) use ($app, $request) {
+    $controller = new OwnerController($app, $request);
+    $response = $controller->delete($id);
+
+    return new JsonResponse($response, Response::HTTP_NO_CONTENT);
+});
+
 $app->on(Application::FILTER_REQUEST, function (GetResponseEvent $event) use ($app) {
     $security = new Security($app, new OwnerRepository($app->getDatabase()));
     if (!$security->isGranted($event->getRequest())) {

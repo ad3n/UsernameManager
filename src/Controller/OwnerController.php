@@ -4,6 +4,7 @@ namespace Ihsanuddin\Controller;
 
 use Ihsanuddin\Application;
 use Ihsanuddin\Model\Owner;
+use Ihsanuddin\Model\OwnerInterface;
 use Ihsanuddin\Repository\OwnerRepository;
 use Ihsanuddin\Util\UsernameTableCreator;
 use Symfony\Component\HttpFoundation\Request;
@@ -45,11 +46,56 @@ class OwnerController
         $ownerRepository->save($owner);
     }
 
-    private function getOwner(Request $request)
+    public function edit($id)
+    {
+        $ownerRepository = new OwnerRepository($this->application->getDatabase());
+        $owner = $ownerRepository->find($id);
+
+        if (!$owner) {
+            return array(
+                'status' => false,
+                'message' => 'Owner tidak ditemukan.',
+            );
+        }
+
+        $owner = $this->getOwner($this->request, $owner);
+        $ownerRepository->edit($owner);
+
+        return array(
+            'status' => true,
+            'message' => 'Owner berhasil diupdate.',
+        );
+    }
+
+    public function delete($id)
+    {
+        $ownerRepository = new OwnerRepository($this->application->getDatabase());
+        $owner = $ownerRepository->find($id);
+
+        if (!$owner) {
+            return array(
+                'status' => false,
+                'message' => 'Owner tidak ditemukan.',
+            );
+        }
+
+        $owner = $this->getOwner($this->request, $owner);
+        $ownerRepository->delete($owner);
+
+        return array(
+            'status' => true,
+            'message' => 'Owner berhasil dihapus.',
+        );
+    }
+
+    private function getOwner(Request $request, OwnerInterface $owner = null)
     {
         $ownerRequest = $request->get('owner');
 
-        $owner = new Owner();
+        if (!$owner instanceof OwnerInterface) {
+            $owner = new Owner();
+        }
+
         $owner->setName($ownerRequest['name']);
         $owner->setEmail($ownerRequest['email']);
         $owner->setIpAddress($ownerRequest['ip']);

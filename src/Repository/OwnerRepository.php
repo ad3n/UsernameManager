@@ -55,6 +55,49 @@ SQLCODE;
         $this->database->execute(str_replace('%owner%', self::TABLE, $sql), $parameters);
     }
 
+    public function edit(OwnerInterface $owner)
+    {
+        $sql =
+<<<'SQLCODE'
+UPDATE 
+    %owner% 
+SET
+    name = :name,
+    email = :email,
+    ip_address = :ipAddress,
+    api = :api
+WHERE
+    id = :id
+;
+SQLCODE;
+
+        $parameters = [
+            'name' => $owner->getName(),
+            'email' => $owner->getEmail(),
+            'ipAddress' => $owner->getIpAddress(),
+            'api' => $owner->getApi(),
+            'id' => $owner->getId(),
+        ];
+
+        $this->database->execute(str_replace('%owner%', self::TABLE, $sql), $parameters);
+    }
+
+    public function delete(OwnerInterface $owner)
+    {
+        $sql =
+<<<'SQLCODE'
+DELETE FROM 
+    %owner%
+WHERE
+    id = :id
+;
+SQLCODE;
+
+        $parameters = ['id' => $owner->getId()];
+
+        $this->database->execute(str_replace('%owner%', self::TABLE, $sql), $parameters);
+    }
+
     /**
      * @param $id
      *
