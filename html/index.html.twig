@@ -135,7 +135,6 @@
 
                     if ('undefined' !== typeof $this.data('id')) {
                         if (0 === $this.data('id')) {
-                            console.log('a');
                             jQuery.ajax({
                                 method: 'POST',
                                 url: '/owner/create?api=' + getParameterByName('api'),
@@ -153,12 +152,16 @@
                                     keyboard: false
                                 });
                             })
-                            .fail(function (jqXHR, textStatus) {
-                                alert( "Request failed: " + textStatus );
+                            .fail(function (response) {
+                                var responseText = JSON.parse(response.responseText);
+                                jQuery('.message').html(responseText.message);
+                                jQuery('.modal-message').modal({
+                                    keyboard: false
+                                });
                             });
                         } else {
                             jQuery.ajax({
-                                method: 'POST',
+                                method: 'PUT',
                                 url: '/owner/edit/' + $this.data('id') + '?api=' + getParameterByName('api'),
                                 data: {
                                     owner: {
@@ -174,8 +177,12 @@
                                     keyboard: false
                                 });
                             })
-                            .fail(function (jqXHR, textStatus) {
-                                alert( "Request failed: " + textStatus );
+                            .fail(function (response) {
+                                var responseText = JSON.parse(response.responseText);
+                                jQuery('.message').html(responseText.message);
+                                jQuery('.modal-message').modal({
+                                    keyboard: false
+                                });
                             });
                         }
                     } else {
@@ -212,7 +219,7 @@
                     e.preventDefault();
                     var $this = jQuery(this);
                     jQuery.ajax({
-                        method: 'POST',
+                        method: 'DELETE',
                         url: '/owner/delete/' + $this.data('id') + '?api=' + getParameterByName('api'),
                         data: {}
                     })
@@ -222,15 +229,20 @@
                             keyboard: false
                         });
                     })
-                    .fail(function (jqXHR, textStatus) {
-                        alert( "Request failed: " + textStatus );
+                    .fail(function (response) {
+                        var responseText = JSON.parse(response.responseText);
+                        jQuery('.message').html(responseText.message);
+                        jQuery('.modal-message').modal({
+                            keyboard: false
+                        });
                     });
                 });
 
                 jQuery(document).on('click', '.clear', function (e) {
                     e.preventDefault();
+                    var location = window.location;
 
-                    window.location.reload();
+                    window.location = location.protocol + '//' + location.host + location.pathname + '?api=' + getParameterByName('api');
                 });
 
                 jQuery(document).on('click', '.edit', function (e) {

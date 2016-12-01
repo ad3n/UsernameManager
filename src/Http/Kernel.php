@@ -76,19 +76,20 @@ abstract class Kernel implements HttpKernelInterface
     }
 
     /**
-     * @param string   $path
-     * @param callable $controller
+     * @param string $path
+     * @param string $controller
+     * @param array $methods
      */
-    public function route($path, $controller)
+    public function route($path, $controller, array $methods = array())
     {
         if (!is_callable($controller)) {
             throw new \InvalidArgumentException(sprintf('%s is not callable.'));
         }
 
-        $this->routes->add($path, new Route(
-            $path,
-            array('_controller' => $controller)
-        ));
+        $route = new Route($path, array('_controller' => $controller));
+        $route->setMethods($methods);
+
+        $this->routes->add($path, $route);
     }
 
     /**
@@ -113,23 +114,5 @@ abstract class Kernel implements HttpKernelInterface
     public function fire($eventName, Event $event)
     {
         return $this->dispatcher->dispatch($eventName, $event);
-    }
-
-    /**
-     * @param string $url
-     *
-     * @return bool
-     */
-    public function match($url)
-    {
-        try {
-            if (empty($this->matcher->match($url))) {
-                return false;
-            }
-
-            return true;
-        } catch (\Exception $exception) {
-            return false;
-        }
     }
 }

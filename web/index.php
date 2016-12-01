@@ -34,7 +34,7 @@ $app->route('/username/generate', function () use ($app, $request) {
         'status' => 'OK',
         'message' => $username,
     ));
-});
+}, array('GET'));
 
 $app->route('/username/confirm/{username}', function ($username) use ($app, $request) {
     $controller = new UsernameController($app, $request);
@@ -44,13 +44,13 @@ $app->route('/username/confirm/{username}', function ($username) use ($app, $req
         'status' => 'OK',
         'message' => sprintf('Username %s berhasil disimpan.', $username),
     ), Response::HTTP_CREATED);
-});
+}, array('POST'));
 
 $app->route('/owner', function () use ($app, $request) {
     $controller = new OwnerController($app, $request);
 
     return new Response($controller->index());
-});
+}, array('GET'));
 
 $app->route('/owner/create', function () use ($app, $request) {
     $controller = new OwnerController($app, $request);
@@ -60,21 +60,21 @@ $app->route('/owner/create', function () use ($app, $request) {
         'status' => 'OK',
         'message' => 'Owner berhasil disimpan.',
     ), Response::HTTP_CREATED);
-});
+}, array('POST'));
 
 $app->route('/owner/edit/{id}', function ($id) use ($app, $request) {
     $controller = new OwnerController($app, $request);
     $response = $controller->edit($id);
 
     return new JsonResponse($response, Response::HTTP_OK);
-});
+}, array('PUT'));
 
 $app->route('/owner/delete/{id}', function ($id) use ($app, $request) {
     $controller = new OwnerController($app, $request);
     $response = $controller->delete($id);
 
     return new JsonResponse($response, Response::HTTP_OK);
-});
+}, array('DELETE'));
 
 $app->on(Application::FILTER_REQUEST, function (GetResponseEvent $event) use ($app) {
     $security = new Security($app, new OwnerRepository($app->getDatabase()));
@@ -90,8 +90,31 @@ $app->on(Application::FILTER_REQUEST, function (GetResponseEvent $event) use ($a
 
 $app->on(Application::FILTER_REQUEST, function (GetResponseEvent $event) use ($app) {
     $security = new Security($app, new OwnerRepository($app->getDatabase()));
-    if (!$security->isAdmin() && ($app->match('/owner') || $app->match('/owner/create'))) {
+    if (!$security->isAdmin() && preg_match('#owner#', $event->getRequest()->getPathInfo())) {
         $event->setResponse(new Response('Access Denied.', Response::HTTP_FORBIDDEN));
+    }
+});
+
+$app->on(Application::FILTER_REQUEST, function (GetResponseEvent $event) {
+    $request = $event->getRequest();
+    if ($owner = $request->get('owner')) {
+        if (!array_key_exists('email', $owner) || FALSE === filter_var($owner['email'], FILTER_VALIDATE_EMAIL)) {
+            $event->setResponse(new JsonResponse(array(
+                'status' => 'KO',
+                'message' => 'Email tidak valid.',
+            ), Response::HTTP_BAD_REQUEST));
+
+            return;
+        }
+
+        if (!array_key_exists('ip_address', $owner) || FALSE === filter_var($owner['ip_address'], FILTER_VALIDATE_IP)) {
+            $event->setResponse(new JsonResponse(array(
+                'status' => 'KO',
+                'message' => 'Ip Address tidak valid.',
+            ), Response::HTTP_BAD_REQUEST));
+
+            return;
+        }
     }
 });
 
