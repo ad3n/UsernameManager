@@ -62,6 +62,10 @@ class Security
             $owner = unserialize($this->application->getSession()->get('owner'));
         }
 
+        if (!$owner) {
+            return false;
+        }
+
         if ($owner->getApi() === OwnerRepository::ADMIN_API && $owner->getIpAddress() === OwnerRepository::ADMIN_IP_ADDRESS) {
             return true;
         }

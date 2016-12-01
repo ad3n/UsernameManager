@@ -73,7 +73,7 @@ $app->route('/owner/delete/{id}', function ($id) use ($app, $request) {
     $controller = new OwnerController($app, $request);
     $response = $controller->delete($id);
 
-    return new JsonResponse($response, Response::HTTP_NO_CONTENT);
+    return new JsonResponse($response, Response::HTTP_OK);
 });
 
 $app->on(Application::FILTER_REQUEST, function (GetResponseEvent $event) use ($app) {

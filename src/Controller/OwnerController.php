@@ -6,7 +6,7 @@ use Ihsanuddin\Application;
 use Ihsanuddin\Model\Owner;
 use Ihsanuddin\Model\OwnerInterface;
 use Ihsanuddin\Repository\OwnerRepository;
-use Ihsanuddin\Util\UsernameTableCreator;
+use Ihsanuddin\Util\UsernameTableUtil;
 use Symfony\Component\HttpFoundation\Request;
 
 class OwnerController
@@ -43,7 +43,7 @@ class OwnerController
         $ownerRepository = new OwnerRepository($this->application->getDatabase());
         $owner = $this->getOwner($this->request);
 
-        UsernameTableCreator::create($this->application->getDatabase(), $owner);
+        UsernameTableUtil::create($this->application->getDatabase(), $owner);
 
         $ownerRepository->save($owner);
     }
@@ -83,6 +83,8 @@ class OwnerController
 
         $owner = $this->getOwner($this->request, $owner);
         $ownerRepository->delete($owner);
+
+        UsernameTableUtil::drop($this->application->getDatabase(), $owner);
 
         return array(
             'status' => true,
