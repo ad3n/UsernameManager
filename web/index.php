@@ -120,3 +120,4 @@ $app->on(Application::FILTER_REQUEST, function (GetResponseEvent $event) {
 
 $response = $app->handle($request);
 $response->send();
+
