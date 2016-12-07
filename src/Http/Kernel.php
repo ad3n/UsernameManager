@@ -83,7 +83,7 @@ abstract class Kernel implements HttpKernelInterface
     public function route($path, $controller, array $methods = array())
     {
         if (!is_callable($controller)) {
-            throw new \InvalidArgumentException(sprintf('%s is not callable.'));
+            throw new \InvalidArgumentException('Controller is not callable');
         }
 
         $route = new Route($path, array('_controller' => $controller));
@@ -99,7 +99,7 @@ abstract class Kernel implements HttpKernelInterface
     public function on($event, $callback)
     {
         if (! is_callable($callback)) {
-            throw new \InvalidArgumentException(sprintf('%s is not callable.'));
+            throw new \InvalidArgumentException('Callback is not callable');
         }
 
         $this->dispatcher->addListener($event, $callback);
